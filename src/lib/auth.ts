@@ -50,8 +50,9 @@ export const auth = betterAuth({
   },
 
   emailVerification: {
-    enabled: true, 
+    enabled: true,
     sendOnSignUp: true,
+    autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
       console.log("🔥 sendVerificationEmail called!");
       console.log("📧 To:", user.email);
@@ -155,6 +156,14 @@ export const auth = betterAuth({
         // Don't throw the error here, just log it
         // Better Auth will handle the user experience
       }
+    },
+    socialProviders: {
+      google: {
+        prompt: "select_account consent",
+        accessType: "offline",
+        clientId: process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      },
     },
   },
 });
