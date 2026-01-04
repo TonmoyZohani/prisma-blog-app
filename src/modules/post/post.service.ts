@@ -1,4 +1,4 @@
-import { Post } from "../../../generated/prisma/client";
+import { Post, Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 const createPost = async (
@@ -15,19 +15,49 @@ const createPost = async (
   return result;
 };
 
-const getAllPost = async (payload: { search?: string | undefined }) => {
-  const allPost = await prisma.post.findMany({
-    where: {
+const getAllPost = async (payload: {
+  search?: string | undefined;
+  tags?: string[] | [];
+}) => {
+  const { search, tags } = payload;
+
+  const andConditions: Prisma.PostWhereInput[] = [];
+
+  if (search) {
+    andConditions.push({
       OR: [
-        { title: { contains: payload.search as string, mode: "insensitive" } },
         {
-          content: { contains: payload.search as string, mode: "insensitive" },
+          title: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
         },
-        { tags: { has: payload.search as string } },
+        {
+          content: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+        {
+          tags: {
+            has: search,
+          },
+        },
       ],
-    },
+    });
+  }
+
+  if (tags && tags.length > 0) {
+    andConditions.push({
+      tags: {
+        hasEvery: tags,
+      },
+    });
+  }
+
+  return prisma.post.findMany({
+    where: andConditions.length > 0 ? { AND: andConditions } : {},
   });
-  return allPost;
 };
 
 export const postService = {
