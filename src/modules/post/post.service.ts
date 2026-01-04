@@ -18,8 +18,9 @@ const createPost = async (
 const getAllPost = async (payload: {
   search?: string | undefined;
   tags?: string[] | [];
+  isFeatured?: boolean | undefined;
 }) => {
-  const { search, tags } = payload;
+  const { search, tags, isFeatured } = payload;
 
   const andConditions: Prisma.PostWhereInput[] = [];
 
@@ -52,6 +53,12 @@ const getAllPost = async (payload: {
       tags: {
         hasEvery: tags,
       },
+    });
+  }
+
+  if (typeof isFeatured === "boolean") {
+    andConditions.push({
+      isFeatured: isFeatured,
     });
   }
 
