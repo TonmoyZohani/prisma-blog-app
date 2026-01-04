@@ -1,3 +1,4 @@
+import { get } from "node:http";
 import { Post } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
@@ -15,6 +16,11 @@ const createPost = async (
   return result;
 };
 
+const getAllPost = async () => {
+  console.log("Get All Post");
+};
+
 export const postService = {
   createPost,
+  getAllPost,
 };

@@ -13,26 +13,16 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export const postController = {
-  createPost,
+const getAllPost = async (req: Request, res: Response) => {
+  try {
+    const result = await postService.getAllPost();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
-// const createPost = async (req: Request, res: Response) => {
-//   const user = req.user;
-
-//   if (!user) {
-//     res.status(401).json({ message: "Unauthorized" });
-//     return;
-//   }
-
-//   try {
-//     const result = await postService.createPost(req.body, user?.id as string);
-//     res.status(201).json(result);
-//   } catch (error) {
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
-
-// export const postController = {
-//   createPost,
-// };
+export const postController = {
+  createPost,
+  getAllPost
+};
