@@ -1,4 +1,3 @@
-import { get } from "node:http";
 import { Post } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
@@ -16,8 +15,9 @@ const createPost = async (
   return result;
 };
 
-const getAllPost = async () => {
-  console.log("Get All Post");
+const getAllPost = async (payload: { search?: string | undefined }) => {
+  const allPost = await prisma.post.findMany();
+  return allPost;
 };
 
 export const postService = {
