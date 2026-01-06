@@ -25,8 +25,20 @@ const getAllPost = async (payload: {
   page?: number;
   limit?: number;
   skip?: number;
+  sortBy?: string;
+  sortOrder?: string;
 }) => {
-  const { search, tags, isFeatured, status, authorId, limit, skip } = payload;
+  const {
+    search,
+    tags,
+    isFeatured,
+    status,
+    authorId,
+    limit,
+    skip,
+    sortBy,
+    sortOrder,
+  } = payload;
 
   const andConditions: Prisma.PostWhereInput[] = [];
 
@@ -84,6 +96,12 @@ const getAllPost = async (payload: {
     take: limit,
     skip,
     where: andConditions.length > 0 ? { AND: andConditions } : {},
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { createdAt: "desc" },
   });
 };
 
