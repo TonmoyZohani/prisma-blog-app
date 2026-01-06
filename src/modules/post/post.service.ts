@@ -1,4 +1,5 @@
 import { Post, PostStatus, Prisma } from "../../../generated/prisma/client";
+import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 
 const createPost = async (
@@ -20,8 +21,9 @@ const getAllPost = async (payload: {
   tags?: string[] | [];
   isFeatured?: boolean | undefined;
   status: PostStatus | undefined;
+  authorId?: string | undefined;
 }) => {
-  const { search, tags, isFeatured, status } = payload;
+  const { search, tags, isFeatured, status, authorId } = payload;
 
   const andConditions: Prisma.PostWhereInput[] = [];
 
@@ -66,6 +68,12 @@ const getAllPost = async (payload: {
   if (status) {
     andConditions.push({
       status: status,
+    });
+  }
+
+  if (authorId) {
+    andConditions.push({
+      authorId: authorId,
     });
   }
 
