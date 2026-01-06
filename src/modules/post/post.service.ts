@@ -1,4 +1,4 @@
-import { Post, Prisma } from "../../../generated/prisma/client";
+import { Post, PostStatus, Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 const createPost = async (
@@ -19,8 +19,9 @@ const getAllPost = async (payload: {
   search?: string | undefined;
   tags?: string[] | [];
   isFeatured?: boolean | undefined;
+  status: PostStatus | undefined;
 }) => {
-  const { search, tags, isFeatured } = payload;
+  const { search, tags, isFeatured, status } = payload;
 
   const andConditions: Prisma.PostWhereInput[] = [];
 
@@ -59,6 +60,12 @@ const getAllPost = async (payload: {
   if (typeof isFeatured === "boolean") {
     andConditions.push({
       isFeatured: isFeatured,
+    });
+  }
+
+  if (status) {
+    andConditions.push({
+      status: status,
     });
   }
 
