@@ -27,6 +27,18 @@ async function seedAdmin() {
       },
       body: JSON.stringify(adminData),
     });
+
+    if(signUpAdmin.ok){
+        await prisma.user.update({
+          where: {
+            email: adminData.email,
+          },
+          data: {
+            emailVerified: true,
+          },
+        });
+    }
+
   } catch (error) {
     console.log(error);
   }
