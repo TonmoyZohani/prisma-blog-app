@@ -52,7 +52,12 @@ const getAllPost = async (req: Request, res: Response) => {
 
 const getPostId = async (req: Request, res: Response) => {
   try {
-    const result = await postService.getPostId();
+    const { postId } = req.params;
+    if (!postId) {
+      throw new Error("Post Id is required");
+    }
+
+    const result = await postService.getPostId(postId);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
