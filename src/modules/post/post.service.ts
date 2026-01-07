@@ -22,11 +22,11 @@ const getAllPost = async (payload: {
   isFeatured?: boolean | undefined;
   status: PostStatus | undefined;
   authorId?: string | undefined;
-  page?: number;
-  limit?: number;
+  page: number;
+  limit: number;
   skip?: number;
-  sortBy?: string;
-  sortOrder?: string;
+  sortBy: string;
+  sortOrder: string;
 }) => {
   const {
     search,
@@ -34,6 +34,7 @@ const getAllPost = async (payload: {
     isFeatured,
     status,
     authorId,
+    page,
     limit,
     skip,
     sortBy,
@@ -92,20 +93,36 @@ const getAllPost = async (payload: {
     });
   }
 
-  return prisma.post.findMany({
+  const allPosts = await prisma.post.findMany({
     take: limit,
     skip,
     where: andConditions.length > 0 ? { AND: andConditions } : {},
-    orderBy:
-      sortBy && sortOrder
-        ? {
-            [sortBy]: sortOrder,
-          }
-        : { createdAt: "desc" },
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
   });
+
+  const totalPosts = await prisma.post.count({
+    where: andConditions.length > 0 ? { AND: andConditions } : {},
+  });
+
+  return {
+    data: allPosts,
+    pagination: {
+      totalPosts,
+      page,
+      limit,
+      totalPages: Math.ceil(totalPosts / limit),
+    },
+  };
+};
+
+const getPostId = async () => {
+  console.log("Get Post Id is created...");
 };
 
 export const postService = {
   createPost,
   getAllPost,
+  getPostId
 };

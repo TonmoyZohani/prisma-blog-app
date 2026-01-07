@@ -25,10 +25,6 @@ const getAllPost = async (req: Request, res: Response) => {
       : undefined;
     const status = req.query.status as PostStatus | undefined;
     const authorId = req.query.authorId as string | undefined;
-    // const page = Number(req.query.page ?? 1);
-    // const limit = Number(req.query.limit ?? 10);
-    // const sortBy = req.query.sortBy as string | undefined;
-    // const sortOrder = req.query.sortOrder as string | undefined;
 
     const { page, limit, sortBy, sortOrder } = paginationSortingHelper(
       req.query
@@ -54,7 +50,17 @@ const getAllPost = async (req: Request, res: Response) => {
   }
 };
 
+const getPostId = async (req: Request, res: Response) => {
+  try {
+    const result = await postService.getPostId();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 export const postController = {
   createPost,
   getAllPost,
+  getPostId,
 };
